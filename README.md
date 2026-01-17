@@ -5,7 +5,6 @@ A minimalist and elegant desktop application for managing AWS SQS LocalStack que
 ## Features
 
 - 🎨 **Minimalist UI** - Clean and elegant interface
-- 🌓 **Light/Dark Mode** - Toggle between themes with persistent settings
 - ⚙️ **SQS Configuration** - Connect to LocalStack or AWS SQS endpoints
 - 📋 **Queue Management** - List, create, and manage queues
 - 📨 **Message Operations** - Send, receive, and delete messages
@@ -21,7 +20,7 @@ A minimalist and elegant desktop application for managing AWS SQS LocalStack que
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 ```
 
 ## Development
@@ -30,14 +29,14 @@ npm install
 
 ```bash
 # Run the Tauri desktop application
-npm run tauri dev
+pnpm run tauri dev
 ```
 
 ### Web App
 
 ```bash
 # Run the web development server
-npm run dev
+pnpm run dev
 ```
 
 ## Building
@@ -46,7 +45,7 @@ npm run dev
 
 ```bash
 # Build the Tauri desktop application
-npm run tauri build
+pnpm run tauri build
 ```
 
 The built application will be available in `src-tauri/target/release/bundle/`.
@@ -55,7 +54,7 @@ The built application will be available in `src-tauri/target/release/bundle/`.
 
 ```bash
 # Build for web deployment
-npm run build
+pnpm run build
 ```
 
 The built files will be in the `dist/` directory.

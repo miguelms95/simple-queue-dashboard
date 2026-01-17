@@ -55,6 +55,10 @@ const selectRegion = async (newRegion: string) => {
         <a href="https://miguelms.es" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-300">
           miguelms.es
         </a>
+        |
+        <a href="https://x.com/miguelms_es" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-300">
+          @miguelms_es
+        </a>
       </div>
     </footer>
 

@@ -70,7 +70,6 @@ async fn list_queues(state: State<'_, SqsState>) -> Result<Vec<QueueInfo>, Strin
     let mut queues = Vec::new();
     for url in resp.queue_urls() {
         let name = url.split('/').last().unwrap_or(url).to_string();
-        println!("print MMS {0}", url);
         queues.push(QueueInfo {
             name,
             url: url.to_string(),
