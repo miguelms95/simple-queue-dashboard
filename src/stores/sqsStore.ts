@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 
 export const isConfigured = ref(false);
+export const region = ref('eu-west-1');
 
 export function setConfigured(value: boolean) {
   isConfigured.value = value;
@@ -11,7 +12,17 @@ export function setConfigured(value: boolean) {
   }
 }
 
+export function setRegion(value: string) {
+    region.value = value;
+    localStorage.setItem('sqs_region', value);
+}
+
 // Check if previously configured on app load
 if (localStorage.getItem('sqs_configured') === 'true') {
   isConfigured.value = true;
+}
+
+const storedRegion = localStorage.getItem('sqs_region');
+if (storedRegion) {
+    region.value = storedRegion;
 }

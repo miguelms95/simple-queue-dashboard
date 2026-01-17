@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { region } from './stores/sqsStore';
 </script>
 
 <template>
@@ -20,7 +21,7 @@
         </router-link>
         <div class="flex items-center gap-2 text-xs font-mono text-cyan-400/60">
           <span class="animate-pulse">●</span>
-          <span>SYSTEM ACTIVE</span>
+          <span>{{ region }}</span>
         </div>
       </div>
     </header>
