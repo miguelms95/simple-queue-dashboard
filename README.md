@@ -1,4 +1,8 @@
-# SQS Dashboard
+
+<p align="center">
+  <img src="src-tauri/icons/icon.png" alt="SQS Dashboard" width="128" height="128">
+</p>
+<h1 align="center">SQS Dashboard</h1>
 
 A minimalist and elegant desktop application for managing AWS SQS LocalStack queues. Built with Tauri, Vue.js, and Tailwind CSS.
 

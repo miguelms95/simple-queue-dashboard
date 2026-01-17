@@ -1,7 +1,7 @@
 [package]
-name = "simple-queue-dashboard"
+name = "SQS-Dashboard"
 version = "0.1.0"
-description = "A Tauri App"
+description = "Simple Queue Dashboard"
 authors = ["miguelms_Es"]
 edition = "2021"
 
