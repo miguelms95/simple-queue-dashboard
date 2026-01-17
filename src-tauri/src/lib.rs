@@ -9,6 +9,7 @@ use tauri::State;
 struct SqsState {
     client: Mutex<Option<Client>>,
     endpoint: Mutex<Option<String>>,
+    region: Mutex<Option<String>>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -27,6 +28,7 @@ struct Message {
 #[tauri::command]
 async fn configure_sqs(
     endpoint: String,
+    region: String,
     state: State<'_, SqsState>,
 ) -> Result<String, String> {
     // Create dummy credentials for LocalStack
@@ -40,7 +42,7 @@ async fn configure_sqs(
 
     let config = aws_config::defaults(BehaviorVersion::latest())
         .endpoint_url(&endpoint)
-        .region(Region::new("eu-west-1"))
+        .region(Region::new(region.clone()))
         .credentials_provider(credentials)
         .load()
         .await;
@@ -49,6 +51,7 @@ async fn configure_sqs(
 
     *state.client.lock().unwrap() = Some(client);
     *state.endpoint.lock().unwrap() = Some(endpoint);
+    *state.region.lock().unwrap() = Some(region);
 
     Ok("SQS configured successfully".to_string())
 }
