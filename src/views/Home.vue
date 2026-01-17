@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { invoke } from '@tauri-apps/api/core';
 import { setConfigured } from '../stores/sqsStore';
@@ -22,6 +22,10 @@ const configureSqs = async () => {
     loading.value = false;
   }
 };
+
+onMounted(() => {
+  configureSqs();
+});
 </script>
 
 <template>
