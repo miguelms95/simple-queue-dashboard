@@ -40,7 +40,7 @@ async fn configure_sqs(
 
     let config = aws_config::defaults(BehaviorVersion::latest())
         .endpoint_url(&endpoint)
-        .region(Region::new("us-east-1"))
+        .region(Region::new("eu-west-1"))
         .credentials_provider(credentials)
         .load()
         .await;
