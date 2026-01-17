@@ -1,4 +1,5 @@
-use aws_config::BehaviorVersion;
+use aws_config::{BehaviorVersion, Region};
+use aws_credential_types::Credentials;
 use aws_sdk_sqs::{Client, types::QueueAttributeName};
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
@@ -28,9 +29,19 @@ async fn configure_sqs(
     endpoint: String,
     state: State<'_, SqsState>,
 ) -> Result<String, String> {
+    // Create dummy credentials for LocalStack
+    let credentials = Credentials::new(
+        "test",
+        "test",
+        None,
+        None,
+        "static"
+    );
+
     let config = aws_config::defaults(BehaviorVersion::latest())
         .endpoint_url(&endpoint)
-        .region("us-east-1")
+        .region(Region::new("us-east-1"))
+        .credentials_provider(credentials)
         .load()
         .await;
 
@@ -54,14 +65,13 @@ async fn list_queues(state: State<'_, SqsState>) -> Result<Vec<QueueInfo>, Strin
         .map_err(|e| e.to_string())?;
 
     let mut queues = Vec::new();
-    if let Some(urls) = resp.queue_urls() {
-        for url in urls {
-            let name = url.split('/').last().unwrap_or(url).to_string();
-            queues.push(QueueInfo {
-                name,
-                url: url.to_string(),
-            });
-        }
+    for url in resp.queue_urls() {
+        let name = url.split('/').last().unwrap_or(url).to_string();
+        println!("print MMS {0}", url);
+        queues.push(QueueInfo {
+            name,
+            url: url.to_string(),
+        });
     }
 
     Ok(queues)
@@ -124,14 +134,12 @@ async fn receive_messages(
         .map_err(|e| e.to_string())?;
 
     let mut messages = Vec::new();
-    if let Some(msgs) = resp.messages() {
-        for msg in msgs {
-            messages.push(Message {
-                id: msg.message_id().unwrap_or("").to_string(),
-                body: msg.body().unwrap_or("").to_string(),
-                receipt_handle: msg.receipt_handle().map(|s| s.to_string()),
-            });
-        }
+    for msg in resp.messages() {
+        messages.push(Message {
+            id: msg.message_id().unwrap_or("").to_string(),
+            body: msg.body().unwrap_or("").to_string(),
+            receipt_handle: msg.receipt_handle().map(|s: &str| s.to_string()),
+        });
     }
 
     Ok(messages)
