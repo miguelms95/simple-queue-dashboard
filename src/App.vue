@@ -32,10 +32,7 @@ const selectRegion = async (newRegion: string) => {
     <header class="relative bg-black/50 backdrop-blur-sm border-b border-cyan-500/20 shadow-lg shadow-cyan-500/5">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         <router-link to="/queues" class="cursor-pointer">
-          <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center gap-2 hover:from-cyan-300 hover:to-blue-400 transition-all">
-            <span class="animate-pulse">▶</span>
-            SQS Dashboard
-          </h1>
+          <span class="text-xs font-mono text-cyan-400/60">Simple Queue Dashboard</span>
         </router-link>
         <div
           @click="showRegionModal = true"
