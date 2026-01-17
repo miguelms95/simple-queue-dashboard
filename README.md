@@ -47,12 +47,48 @@ pnpm run dev
 
 ### Desktop App
 
+To build the Tauri desktop application for your current platform, run:
+
 ```bash
 # Build the Tauri desktop application
 pnpm run tauri build
 ```
 
 The built application will be available in `src-tauri/target/release/bundle/`.
+
+#### Cross-Platform Builds
+
+Building for a different platform than your own requires setting up the appropriate toolchain.
+
+**On macOS (for Windows):**
+
+You'll need to install the `x86_64-pc-windows-msvc` target and the `llvm-tools-preview` component.
+
+```bash
+rustup target add x86_64-pc-windows-msvc
+rustup component add llvm-tools-preview
+```
+
+Then you can build the Windows app with:
+
+```bash
+pnpm run tauri build --target x86_64-pc-windows-msvc
+```
+
+**On Windows/Linux (for macOS):**
+
+Cross-compiling for macOS from other platforms is not well-supported. It is recommended to build on macOS using the standard build command.
+
+#### Automated Builds with GitHub Actions
+
+This repository is configured with a GitHub Action to automatically build the application for macOS, Windows, and Linux. To trigger this action, create and push a new tag:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The action will create a draft release on GitHub with the compiled application bundles attached.
 
 ### Web App
 
