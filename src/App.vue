@@ -1,5 +1,23 @@
 <script setup lang="ts">
-import { region } from './stores/sqsStore';
+import { ref } from 'vue';
+import { region, reconfigureSqs } from './stores/sqsStore';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const showRegionModal = ref(false);
+const awsRegions = [
+  "us-east-1", "us-east-2", "us-west-1", "us-west-2",
+  "af-south-1", "ap-east-1", "ap-south-1", "ap-northeast-1",
+  "ap-northeast-2", "ap-northeast-3", "ap-southeast-1", "ap-southeast-2",
+  "ca-central-1", "eu-central-1", "eu-west-1", "eu-west-2",
+  "eu-west-3", "eu-north-1", "me-south-1", "sa-east-1"
+];
+
+const selectRegion = async (newRegion: string) => {
+  showRegionModal.value = false;
+  await reconfigureSqs(newRegion);
+  router.go(0); // Reload the page to reflect changes
+};
 </script>
 
 <template>
@@ -13,13 +31,16 @@ import { region } from './stores/sqsStore';
     <!-- Header -->
     <header class="relative bg-black/50 backdrop-blur-sm border-b border-cyan-500/20 shadow-lg shadow-cyan-500/5">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <router-link to="/" class="cursor-pointer">
+        <router-link to="/queues" class="cursor-pointer">
           <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 flex items-center gap-2 hover:from-cyan-300 hover:to-blue-400 transition-all">
             <span class="animate-pulse">▶</span>
             SQS Dashboard
           </h1>
         </router-link>
-        <div class="flex items-center gap-2 text-xs font-mono text-cyan-400/60">
+        <div
+          @click="showRegionModal = true"
+          class="flex items-center gap-2 text-xs font-mono text-cyan-400/60 cursor-pointer hover:text-cyan-300"
+        >
           <span class="animate-pulse">●</span>
           <span>{{ region }}</span>
         </div>
@@ -29,5 +50,25 @@ import { region } from './stores/sqsStore';
     <main class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <router-view />
     </main>
+
+    <!-- Region Selector Modal -->
+    <div v-if="showRegionModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="bg-gray-900/80 border border-cyan-500/30 rounded-lg shadow-lg p-6 w-full max-w-sm">
+        <h3 class="text-lg font-mono text-cyan-400 mb-4">Select AWS Region</h3>
+        <div class="grid grid-cols-2 gap-2 max-h-96 overflow-y-auto custom-scrollbar">
+          <button
+            v-for="r in awsRegions"
+            :key="r"
+            @click="selectRegion(r)"
+            class="w-full text-left px-4 py-3 rounded transition-all font-mono text-sm bg-black/30 border border-cyan-500/10 text-gray-400 hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:text-cyan-300"
+          >
+            {{ r }}
+          </button>
+        </div>
+        <button @click="showRegionModal = false" class="mt-4 w-full text-center py-2 text-xs font-mono text-cyan-400/60 hover:text-cyan-300">
+          CLOSE
+        </button>
+      </div>
+    </div>
   </div>
 </template>

@@ -2,10 +2,10 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { invoke } from '@tauri-apps/api/core';
-import { isConfigured, setConfigured, setRegion, region as storeRegion } from '../stores/sqsStore';
+import { isConfigured, setConfigured, setRegion, region as storeRegion, setEndpoint, endpoint as storeEndpoint } from '../stores/sqsStore';
 
 const router = useRouter();
-const endpoint = ref('http://localhost:4566');
+const endpoint = ref(storeEndpoint.value);
 const region = ref(storeRegion.value);
 const loading = ref(false);
 const error = ref('');
@@ -25,6 +25,7 @@ const configureSqs = async () => {
     await invoke('configure_sqs', { endpoint: endpoint.value, region: region.value });
     setConfigured(true);
     setRegion(region.value);
+    setEndpoint(endpoint.value);
     router.push('/queues');
   } catch (e) {
     error.value = String(e);
@@ -37,8 +38,6 @@ const configureSqs = async () => {
 onMounted(() => {
   if (!isConfigured.value) {
     configureSqs();
-  } else {
-    router.push('/queues');
   }
 });
 </script>

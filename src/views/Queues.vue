@@ -67,13 +67,21 @@ const selectQueue = (queue: QueueInfo) => {
         <h2 class="text-lg font-semibold text-cyan-400 font-mono flex items-center gap-2">
           <span class="text-cyan-500">›</span> Queues
         </h2>
-        <button
-          @click="loadQueues"
-          :disabled="loading"
-          class="text-cyan-400 hover:text-cyan-300 text-xs font-mono transition-colors disabled:text-gray-600 cursor-pointer"
-        >
-          ⟳ REFRESH
-        </button>
+        <div class="flex items-center gap-4">
+          <button
+            @click="router.push('/')"
+            class="text-cyan-400 hover:text-cyan-300 text-xs font-mono transition-colors cursor-pointer"
+          >
+            ⚙ CHANGE CONFIG
+          </button>
+          <button
+            @click="loadQueues"
+            :disabled="loading"
+            class="text-cyan-400 hover:text-cyan-300 text-xs font-mono transition-colors disabled:text-gray-600 cursor-pointer"
+          >
+            ⟳ REFRESH
+          </button>
+        </div>
       </div>
 
       <div class="space-y-2 mb-4">
