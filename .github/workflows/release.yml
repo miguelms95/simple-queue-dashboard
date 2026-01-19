@@ -81,11 +81,10 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: 'App ${{ github.ref_name }}'
           body: 'See the assets to download this version.'
-          draft: true
+          draft: false
           prerelease: false
           files: |
             tauri-builds/**/*.dmg
-            tauri-builds/**/*.tar.gz
             tauri-builds/**/*.zip
             tauri-builds/**/*.deb
             tauri-builds/**/*.AppImage
