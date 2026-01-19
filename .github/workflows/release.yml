@@ -23,10 +23,10 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
 
@@ -56,7 +56,7 @@ jobs:
         run: pnpm tauri build ${{ matrix.target && format('--target {0}', matrix.target) || '' }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: tauri-build-${{ matrix.platform }}-${{ matrix.target || 'native' }}
           path: src-tauri/target/release/bundle/
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           path: tauri-builds
 
@@ -76,7 +76,7 @@ jobs:
         run: ls -R tauri-builds
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: 'App ${{ github.ref_name }}'
