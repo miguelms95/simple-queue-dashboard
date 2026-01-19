@@ -12,3 +12,6 @@ run: ## run web
 
 tauri: ## run tauri desktop app
 	pnpm run tauri dev
+
+tauri-build:
+	pnpm run tauri-build

@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: tauri-build-${{ matrix.platform }}-${{ matrix.target || 'native' }}
-          path: src-tauri/target/release/bundle/
+          path: ${{ matrix.target && format('src-tauri/target/{0}/release/bundle/', matrix.target) || 'src-tauri/target/release/bundle/' }}
 
   release:
     permissions:
