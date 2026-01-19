@@ -7,13 +7,19 @@ on:
       - 'v*' # Push a tag like v1.0.0 to trigger a release
 
 jobs:
-  build-tauri:
+  build:
     permissions:
-      contents: write
+      contents: read
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - platform: macos-latest
+            target: x86_64-apple-darwin
+          - platform: macos-latest
+            target: aarch64-apple-darwin
+          - platform: ubuntu-latest
+          - platform: windows-latest
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -32,9 +38,11 @@ jobs:
 
       - name: setup rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
 
       - name: rust cache
-        uses: swatinem/rust-cache@v2I want
+        uses: swatinem/rust-cache@v2
         with:
           workspaces: './src-tauri -> target'
 
@@ -42,24 +50,43 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-      - name: build the app
-        uses: tauri-apps/tauri-action@v0
-        id: tauri-build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: build
+        run: pnpm tauri build ${{ matrix.target && format('--target {0}', matrix.target) || '' }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          tagName: ${{ github.ref_name }} # This is the tag that was pushed
-          releaseName: 'App ${{ github.ref_name }}'
-          releaseBody: 'See the assets to download this version.'
-          releaseDraft: true
+          name: tauri-build-${{ matrix.platform }}-${{ matrix.target || 'native' }}
+          path: src-tauri/target/release/bundle/
+
+  release:
+    permissions:
+      contents: write
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: tauri-builds
+
+      - name: List files
+        run: ls -R tauri-builds
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: 'App ${{ github.ref_name }}'
+          body: 'See the assets to download this version.'
+          draft: true
           prerelease: false
-      - name: Upload release assets
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          ASSETS=$(find src-tauri/target/release -type f -name "*.tar.gz" -o -name "*.zip" -o -name "*.deb" -o -name "*.AppImage")
-          if [ -n "$ASSETS" ]; then
-            gh release upload ${{ github.ref_name }} $ASSETS --clobber
-          fi
+          files: |
+            tauri-builds/**/*.dmg
+            tauri-builds/**/*.tar.gz
+            tauri-builds/**/*.zip
+            tauri-builds/**/*.deb
+            tauri-builds/**/*.AppImage
+            tauri-builds/**/*.msi
